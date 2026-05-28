@@ -10,7 +10,7 @@ namespace Tamagochi.Views
 
             Console.WriteLine(tamagochiController.Titulo + "\n\n\nQual seu nome?\n");
 
-            tamagochiController.NomeUsuario = Console.ReadLine();
+            tamagochiController.NomeUsuario = Console.ReadLine() ?? string.Empty;
 
             tamagochiController.GetMenuPrincipal();
             tamagochiController.GetStart();

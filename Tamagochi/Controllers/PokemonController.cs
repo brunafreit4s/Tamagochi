@@ -7,50 +7,64 @@ namespace Tamagochi.Controllers
     {
         public async Task<PokemonResponse> GetListPokemon()
         {
-            string url = "https://pokeapi.co/api/v2/pokemon/?limit=50";
-
-            using (HttpClient client = new HttpClient())
+            try
             {
-                PokemonResponse pokemon = new PokemonResponse();
+                string url = "https://pokeapi.co/api/v2/pokemon/?limit=50";
 
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    HttpResponseMessage response = await client.GetAsync(url);
+                    PokemonResponse pokemon = new PokemonResponse();
 
-                    if (response.IsSuccessStatusCode)
+                    try
                     {
-                        string content = await response.Content.ReadAsStringAsync();
-                        pokemon = JsonSerializer.Deserialize<PokemonResponse>(content);
+                        HttpResponseMessage response = await client.GetAsync(url);
 
-                        return pokemon;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string content = await response.Content.ReadAsStringAsync();
+                            pokemon = JsonSerializer.Deserialize<PokemonResponse>(content) ?? new PokemonResponse();
+
+                            return pokemon;
+                        }
+                        else
+                        {
+                            pokemon.StatusCode = 404;
+                            pokemon.MessageError = "Lista do menu não encontrada!";
+                            return pokemon;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        pokemon.StatusCode = 404;
-                        pokemon.MessageError = "Lista do menu não encontrada!";
+                        pokemon.StatusCode = 500;
+                        pokemon.MessageError = $"Ocorreu um erro no servidor - Erro: {ex.Message}";
                         return pokemon;
                     }
                 }
-                catch (Exception ex)
-                {
-                    pokemon.StatusCode = 500;
-                    pokemon.MessageError = $"Ocorreu um erro no servidor - Erro: {ex.Message}";
-                    return pokemon;
-                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ocorreu um erro ao consultar a lista de Pokemons - Erro: {ex.Message}");
             }
         }
 
         public async Task<Pokemon> GetPokemonApi(int opcao)
         {
-            string url = $"https://pokeapi.co/api/v2/pokemon/{opcao}/";
-
-            using (HttpClient client = new HttpClient())
+            try
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-                string content = await response.Content.ReadAsStringAsync();
-                Pokemon pokedex = JsonSerializer.Deserialize<Pokemon>(content);
+                string url = $"https://pokeapi.co/api/v2/pokemon/{opcao}/";
 
-                return pokedex;
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    string content = await response.Content.ReadAsStringAsync();
+                    Pokemon pokedex = JsonSerializer.Deserialize<Pokemon>(content) ?? new Pokemon();
+
+                    return pokedex;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ocorreu um erro ao consultar o Pokémon - Erro: {ex.Message}");
             }
         }
 
@@ -58,7 +72,7 @@ namespace Tamagochi.Controllers
         {
             Task<Pokemon> pokedex = GetPokemonApi(codPokemon);
 
-            string escolhido = $"\nNome do Pokemon: {pokedex.Result.Nome}," +
+            string escolhido = $"\nNome do Pokémon: {pokedex.Result.Nome}," +
                                            $"\nAltura: {pokedex.Result.Altura}," +
                                            $"\nPeso: {pokedex.Result.Peso}," +
                                            $"\nHabilidades:\n";

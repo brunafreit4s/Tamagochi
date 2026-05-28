@@ -9,7 +9,7 @@ namespace Tamagochi.Controllers
             int count = 1;
             string menu = "";
 
-            foreach (var item in pokemon.Result.Results)
+            foreach (var item in pokemon.Result.Results ?? new List<PokemonResult>())
             {
                 menu += $"{count} - " + item.Nome + "\n";
                 count++;
@@ -20,7 +20,7 @@ namespace Tamagochi.Controllers
 
         public void RetornaOpcaoInvalida()
         {
-            Console.WriteLine("Escolha inválida. Tente novamente.");
+            Console.WriteLine("\nEscolha inválida. Tente novamente.");
         }
     }
 }

@@ -8,10 +8,10 @@ namespace Tamagochi.Models
         public int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [JsonPropertyName("abilities")]
-        public List<Abilities> Habilidades { get; set; }
+        public List<Abilities> Habilidades { get; set; } = new List<Abilities>();
 
         [JsonPropertyName("height")]
         public int Altura { get; set; }
@@ -31,7 +31,7 @@ namespace Tamagochi.Models
     public class PokemonResponse
     {
         [JsonPropertyName("results")]
-        public List<PokemonResult>? Results { get; set; }
+        public List<PokemonResult>? Results { get; set; } = new List<PokemonResult>();
 
         public int StatusCode { get; set; }
         public string? MessageError { get; set; }

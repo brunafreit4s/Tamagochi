@@ -14,12 +14,12 @@ namespace Tamagochi.Controllers
             Console.WriteLine(retorno.ToUpper());
         }        
 
-        public void GetMenuSecundario(int codPokemon)
+        public void GetMenuInteracao(int codPokemon)
         {
             var response = GetPokemonApi(codPokemon);
             string retorno = "\n-------------------- -------------------- -------------------- --------------------\n";
             retorno += $"{NomeUsuario} você deseja:\n";
-            retorno += $"1 - Saber mais sobre {response.Result.Nome}.\n2 - Adotar {response.Result.Nome}.\n3 - Voltar.\n";
+            retorno += $"1 - Saber mais sobre {response.Result.Nome}.\n2 - Adotar {response.Result.Nome}.\n3 - Voltar.\n\n";
 
             Console.WriteLine(retorno.ToUpper());
         }
@@ -35,23 +35,17 @@ namespace Tamagochi.Controllers
             Console.WriteLine(opcoesFormatada.ToUpper());
         }
 
-        public void GetMenuInteracao(int codPokemon)
-        {
-            var response = GetPokemonApi(codPokemon).Result;
-            string retorno = "\n-------------------- -------------------- -------------------- --------------------\n";
-            retorno += $"{NomeUsuario} você deseja:\n";
-            retorno += $"1 - Saber mais sobre {response.Nome}.\n2 - Adotar {response.Nome}.\n3 - Voltar.\n\n";
-
-            Console.WriteLine(retorno.ToUpper());
-        }
-
         public void GetMenuSobrePokemon(int posicaoPokemon)
         {
             var response = GetPokemonNaPokedex(posicaoPokemon);
-            string retorno = "\n---------------------------------------- Menu ----------------------------------------\n";
-            retorno += $"{NomeUsuario} você deseja:\n";
-            retorno += $"1 - Saber como {response.Nome} está.\n2 - Alimentar {response.Nome}.\n3 - Brincar com {response.Nome}.\n4 - Colocar {response.Nome} para dormir.\n5 - Dar carinho no {response.Nome}.\n6 - Voltar.\n\n";
-            Console.WriteLine(retorno.ToUpper());
+
+            if(!string.IsNullOrEmpty(response.Nome))
+            {
+                string retorno = "\n---------------------------------------- Menu ----------------------------------------\n";
+                retorno += $"{NomeUsuario} você deseja:\n";
+                retorno += $"1 - Saber como {response.Nome} está.\n2 - Alimentar {response.Nome}.\n3 - Brincar com {response.Nome}.\n4 - Colocar {response.Nome} para dormir.\n5 - Dar carinho no {response.Nome}.\n6 - Voltar.\n\n";
+                Console.WriteLine(retorno.ToUpper());
+            }           
         }
     }
 }

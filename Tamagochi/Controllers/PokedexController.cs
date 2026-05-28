@@ -24,39 +24,50 @@ namespace Tamagochi.Controllers
             }
         }
 
-        public void GetPokedex()
+        public string GetPokedex()
         {
-            string retorno = "\n---------------------------------------- Pokedex ----------------------------------------\n";
-
-            if (_pokemons.Count > 0)
+            try
             {
-                string textPokemon = (_pokemons.Count > 1) ? "Pokemons" : "Pokemon";
+                string retorno = "\n---------------------------------------- Pokedex ----------------------------------------\n";
 
-                retorno += $"\nVocê tem {_pokemons.Count} {textPokemon}:\n";
-
-                for (int i = 0; i < _pokemons.Count; i++)
+                if (_pokemons.Count > 0)
                 {
-                    retorno += $"\n{i + 1} - {_pokemons[i].Nome}\n";
+                    string textPokemon = (_pokemons.Count > 1) ? "Pokemons" : "Pokemon";
+
+                    retorno += $"\nVocê tem {_pokemons.Count} {textPokemon}:\n";
+
+                    for (int i = 0; i < _pokemons.Count; i++)
+                    {
+                        retorno += $"\n{i + 1} - {_pokemons[i].Nome}";
+                    }
+
+                    retorno += $"\n\nEscolha um para interagir:\n";
+                }
+                else
+                {
+                    retorno += "\nVocê não adotou nenhum Pokemon até o momento!\n\n";
+                    retorno += $"     ▄████████████████▄      \n";
+                    retorno += $"     █                █      \n";
+                    retorno += $"     █     █    █     █      \n";
+                    retorno += $"     █    ▀      ▀    █      \n";
+                    retorno += $"     █   ▀        ▀   █      \n";
+                    retorno += $"     █                █      \n";
+                    retorno += $"     █    ▄▀▀▀▀▀▀▄    █      \n";
+                    retorno += $"     █   ▀        ▀   █      \n";
+                    retorno += $"     █                █      \n";
+                    retorno += $"     ▀████████████████▀      \n";
                 }
 
-                retorno += $"\nEscolha um para interagir:\n";
+                return retorno.ToUpper();
             }
-            else
+            catch (ArgumentOutOfRangeException)
             {
-                retorno += "\nVocê não adotou nenhum Pokemon até o momento!\n\n";
-                retorno += $"     ▄████████████████▄      \n";
-                retorno += $"     █                █      \n";
-                retorno += $"     █     █    █     █      \n";
-                retorno += $"     █    ▀      ▀    █      \n";
-                retorno += $"     █   ▀        ▀   █      \n";
-                retorno += $"     █                █      \n";
-                retorno += $"     █    ▄▀▀▀▀▀▀▄    █      \n";
-                retorno += $"     █   ▀        ▀   █      \n";
-                retorno += $"     █                █      \n";
-                retorno += $"     ▀████████████████▀      \n";
+                return "";
             }
-
-            Console.WriteLine(retorno.ToUpper());
+            catch (Exception ex)
+            {
+                throw new Exception($"Ocorreu um erro ao consultar a Pokedex - Erro: {ex.Message}");
+            }
         }
 
         public bool TryPokedex()
@@ -66,9 +77,20 @@ namespace Tamagochi.Controllers
 
         public Pokemon GetPokemonNaPokedex(int posicaoPokemon)
         {
-            posicaoPokemon--;
-            _pokemon = _pokemons[posicaoPokemon];
-            return _pokemon;
+            try
+            {
+                posicaoPokemon--;
+                _pokemon = _pokemons[posicaoPokemon];
+                return _pokemon;
+            }
+            catch (ArgumentOutOfRangeException)
+            {                
+                return new Pokemon();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ocorreu um erro ao consultar o Pokémon na Pokedex - Erro: {ex.Message}");
+            }
         }
 
         public void AtualizarPropriedades(Pokemon pokemonDetails)
@@ -85,7 +107,7 @@ namespace Tamagochi.Controllers
             _pokemon.Status.Alimentacao = Math.Min(_pokemon.Status.Alimentacao + 2, 10);
             _pokemon.Status.Energia = Math.Max(_pokemon.Status.Energia - 1, 0);
             
-            Console.WriteLine("Pokémon Alimentado!!! =^-^=\n");
+            Console.WriteLine("☕︎ - Pokémon Alimentado!!! (˶ˆᗜˆ˵)");
         }
 
         public void Brincar(int codPokemon)
@@ -94,7 +116,7 @@ namespace Tamagochi.Controllers
             _pokemon.Status.Energia = Math.Max(_pokemon.Status.Energia - 2, 0);
             _pokemon.Status.Alimentacao = Math.Max(_pokemon.Status.Alimentacao - 1, 0);
 
-            Console.WriteLine("Pokémon se divertiu bastante *_*\n");
+            Console.WriteLine("❤ - Pokémon se divertiu bastante ⸜( ˆᵕˆ )⸝ ❀");
         }
 
         public void Descansar(int codPokemon)
@@ -102,7 +124,7 @@ namespace Tamagochi.Controllers
             _pokemon.Status.Energia = Math.Min(_pokemon.Status.Energia + 4, 10);
             _pokemon.Status.Humor = Math.Max(_pokemon.Status.Humor - 1, 0);
 
-            Console.WriteLine("Pokémon dormiu bastante z_z\n");
+            Console.WriteLine("✴︎ - Pokémon dormiu bastante (ᴗ͈ ˬ ᴗ͈)ᶻᶻᶻ");
         }
 
         public void DarCarinho(int codPokemon)
@@ -110,7 +132,7 @@ namespace Tamagochi.Controllers
             _pokemon.Status.Humor = Math.Min(_pokemon.Status.Humor + 2, 10);
             _pokemon.Status.Saude = Math.Min(_pokemon.Status.Saude + 1, 10);
 
-            Console.WriteLine("Pokémon está se sentindo amado! <3");
+            Console.WriteLine("❤ - Pokémon está se sentindo amado! ପ(๑•ᴗ•๑)ଓ ");
         }
 
         public void MostrarStatus(int codPokemon)

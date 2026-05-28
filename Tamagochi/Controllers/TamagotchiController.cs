@@ -33,11 +33,11 @@ namespace Tamagochi.Controllers
                                 try
                                 {
                                     // Consulta nome do pokemon selecionado
-                                    GetMenuSecundario(codPokemon);
+                                    GetMenuInteracao(codPokemon);
                                 }
                                 catch
                                 {
-                                    Console.WriteLine("Não foi possível encontrar o Pokemon informado, tente novamente!");
+                                    _utilController.RetornaOpcaoInvalida();
                                     GetMenuPrincipal();
                                     break;
                                 }
@@ -54,7 +54,7 @@ namespace Tamagochi.Controllers
                                                 // Consulta sobre o pokemon selecionado (peso, altura, nome, etc.)
                                                 GetSobrePokemon(codPokemon);
                                                 // Consulta nome do pokemon selecionado
-                                                GetMenuSecundario(codPokemon);
+                                                GetMenuInteracao(codPokemon);
                                                 break;
                                             case 2:
                                                 Console.WriteLine($"\n{NomeUsuario}, Mascote adotado com sucesso, o ovo está chocando...\n");
@@ -67,7 +67,7 @@ namespace Tamagochi.Controllers
                                                 Console.WriteLine("              ");
                                                 //Guarda Pokemon adotado na Pokedex
                                                 PutPokedex(codPokemon);
-                                                GetMenuSecundario(codPokemon);
+                                                GetMenuInteracao(codPokemon);
                                                 break;
                                             case 3:
                                                 continuarMenuSecundario = 0;
@@ -92,57 +92,79 @@ namespace Tamagochi.Controllers
                             break;
                         case 2:                            
                             //Retorna Pokemons adotados
-                            GetPokedex();
+                            string retorno = GetPokedex();
+                            if(retorno != "") Console.WriteLine(retorno.ToUpper());
 
                             if (TryPokedex())
                             {
                                 int posicaoPokemon = 0;
-
-                                if (int.TryParse(Console.ReadLine(), out posicaoPokemon))
+                                bool pokemonValido = false;
+                                
+                                while (!pokemonValido)
                                 {
-                                    GetMenuSobrePokemon(posicaoPokemon);
-
-                                    int continuarMenuPokemons = 1;
-
-                                    while (continuarMenuPokemons > 0)
+                                    if (int.TryParse(Console.ReadLine(), out posicaoPokemon))
                                     {
-                                        int opcaoEscolhida2 = 0;
-                                        if (int.TryParse(Console.ReadLine(), out opcaoEscolhida2))
+                                        var pokemonVerificado = GetPokemonNaPokedex(posicaoPokemon);
+                                        
+                                        if (!string.IsNullOrEmpty(pokemonVerificado.Nome))
                                         {
-                                            switch (opcaoEscolhida2)
-                                            {
-                                                case 1:
-                                                    MostrarStatus(posicaoPokemon);
-                                                    GetMenuSobrePokemon(posicaoPokemon);
-                                                    break;
-                                                case 2:
-                                                    Alimentar(posicaoPokemon);
-                                                    GetMenuSobrePokemon(posicaoPokemon);
-                                                    break;
-                                                case 3:
-                                                    Brincar(posicaoPokemon);
-                                                    GetMenuSobrePokemon(posicaoPokemon);
-                                                    break;
-                                                case 4:
-                                                    Descansar(posicaoPokemon);
-                                                    GetMenuSobrePokemon(posicaoPokemon);
-                                                    break;
-                                                case 5:
-                                                    DarCarinho(posicaoPokemon);
-                                                    GetMenuSobrePokemon(posicaoPokemon);
-                                                    break;
-                                                case 6:
-                                                    GetMenuPrincipal();
-                                                    continuarMenuPokemons = 0;
-                                                    break;
-                                                default:
-                                                    Console.WriteLine("Escolha inválida. Tente novamente.\n");
-                                                    break;
-                                            }
+                                            pokemonValido = true;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("\nO número do Pokémon é inválido ou não existe na Pokedex.\n");
+                                            Console.WriteLine(retorno.ToUpper());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _utilController.RetornaOpcaoInvalida();
+                                        Console.WriteLine(retorno.ToUpper());
+                                    }
+                                }
+                                
+                                GetMenuSobrePokemon(posicaoPokemon);
+
+                                int continuarMenuPokemons = 1;
+                                while (continuarMenuPokemons > 0)
+                                {
+                                    int opcaoEscolhida2 = 0;
+                                    if (int.TryParse(Console.ReadLine(), out opcaoEscolhida2))
+                                    {
+                                        switch (opcaoEscolhida2)
+                                        {
+                                            case 1:
+                                                MostrarStatus(posicaoPokemon);
+                                                GetMenuSobrePokemon(posicaoPokemon);
+                                                break;
+                                            case 2:
+                                                Alimentar(posicaoPokemon);
+                                                GetMenuSobrePokemon(posicaoPokemon);
+                                                break;
+                                            case 3:
+                                                Brincar(posicaoPokemon);
+                                                GetMenuSobrePokemon(posicaoPokemon);
+                                                break;
+                                            case 4:
+                                                Descansar(posicaoPokemon);
+                                                GetMenuSobrePokemon(posicaoPokemon);
+                                                break;
+                                            case 5:
+                                                DarCarinho(posicaoPokemon);
+                                                GetMenuSobrePokemon(posicaoPokemon);
+                                                break;
+                                            case 6:
+                                                GetMenuPrincipal();
+                                                continuarMenuPokemons = 0;
+                                                break;
+                                            default:
+                                                _utilController.RetornaOpcaoInvalida();
+                                                GetMenuSobrePokemon(posicaoPokemon);
+                                                break;
                                         }
                                     }
                                 }
-                            }
+                            }                            
                             else
                             {
                                 GetMenuPrincipal();
@@ -154,7 +176,7 @@ namespace Tamagochi.Controllers
                             continuarJogando = 0;
                             break;
                         default:
-                            Console.WriteLine("Escolha inválida. Tente novamente.");
+                            _utilController.RetornaOpcaoInvalida();
                             break;
                     }
                 }
